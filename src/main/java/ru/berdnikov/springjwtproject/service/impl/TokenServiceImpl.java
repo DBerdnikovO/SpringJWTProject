@@ -16,6 +16,7 @@ import ru.berdnikov.springjwtproject.service.TokenService;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -52,7 +53,7 @@ public class TokenServiceImpl implements TokenService {
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
                 .claim(ID_CLAIM, id)
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(SignatureAlgorithm.HS512, Base64.getEncoder().encodeToString(jwtSecret.getBytes()))
                 .setIssuedAt(issueDate)
                 .setExpiration(expirationDate)
                 .compact();

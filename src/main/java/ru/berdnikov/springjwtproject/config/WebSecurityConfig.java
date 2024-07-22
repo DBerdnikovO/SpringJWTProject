@@ -2,8 +2,6 @@ package ru.berdnikov.springjwtproject.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,12 +27,11 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final JWTAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public PasswordEncoder pass(){
+    public PasswordEncoder pass() {
         return new BCryptPasswordEncoder();
     }
 
@@ -51,8 +48,11 @@ public class WebSecurityConfig {
                 .exceptionHandling((exception) -> exception.authenticationEntryPoint(authenticationEntryPoint).accessDeniedPage("/error/access-denied"))
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/api/test/**").permitAll()
+                        .requestMatchers(WSCHelper.Resources.LOGIN.getPath()).permitAll()
+                        .requestMatchers(WSCHelper.Resources.REGIS.getPath()).permitAll()
+                        .requestMatchers(WSCHelper.Resources.ADMIN.getPath()).hasRole(WSCHelper.Roles.ADMIN.name())
+                        .requestMatchers(WSCHelper.Resources.USER.getPath()).hasRole(WSCHelper.Roles.USER.name())
+                        .requestMatchers(WSCHelper.Resources.PUB.getPath()).permitAll()
                         .anyRequest()
                         .authenticated()
                 )

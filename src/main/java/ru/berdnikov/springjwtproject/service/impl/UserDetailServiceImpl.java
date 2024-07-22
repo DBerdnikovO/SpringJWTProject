@@ -25,7 +25,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
+    public AppUser loadUserByUsername(String username) {
         Optional<UserModel> userOptional = userRepository.findUserModelByUsername(username);
         if (userOptional.isEmpty()) {
             throw new UsernameNotFoundException("UserModel not found");

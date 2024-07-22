@@ -1,5 +1,6 @@
 package ru.berdnikov.springjwtproject.service;
 
+import org.springframework.http.ResponseEntity;
 import ru.berdnikov.springjwtproject.model.UserModel;
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface UserService {
     List<UserModel> findAll();
 
     void saveUser(UserModel userModel);
+
+    UserModel createUser(UserModel userModel);
 }
