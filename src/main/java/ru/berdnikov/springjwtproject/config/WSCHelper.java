@@ -9,8 +9,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class WSCHelper {
     protected enum Roles {
-        ADMIN,USER;
+        ADMIN, USER;
     }
+
     protected enum Resources {
         LOGIN("/login/**"),
         REGIS("/reg/**"),

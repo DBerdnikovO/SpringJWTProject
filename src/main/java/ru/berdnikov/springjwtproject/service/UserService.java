@@ -1,6 +1,6 @@
 package ru.berdnikov.springjwtproject.service;
 
-import org.springframework.http.ResponseEntity;
+import ru.berdnikov.springjwtproject.dto.CreateUserRequest;
 import ru.berdnikov.springjwtproject.model.UserModel;
 
 import java.util.List;
@@ -17,7 +17,9 @@ public interface UserService {
 
     List<UserModel> findAll();
 
-    void saveUser(UserModel userModel);
+    UserModel saveUser(CreateUserRequest createUserRequest);
 
-    UserModel createUser(UserModel userModel);
+//    UserModel createUser(CreateUserRequest userRequest);
+
+    Boolean passwordMatch(String inPassword, String codePassword);
 }

@@ -3,13 +3,18 @@ package ru.berdnikov.springjwtproject.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.berdnikov.springjwtproject.dto.CreateUserRequest;
+import ru.berdnikov.springjwtproject.exception.UserException;
+import ru.berdnikov.springjwtproject.model.RoleType;
 import ru.berdnikov.springjwtproject.model.UserModel;
 import ru.berdnikov.springjwtproject.repository.UserRepository;
 import ru.berdnikov.springjwtproject.service.UserService;
+import ru.berdnikov.springjwtproject.util.ErrorCode;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author danilaberdnikov on UserServiceImpl.
@@ -37,13 +42,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveUser(UserModel userModel) {
-        userRepository.save(userModel);
+    @Transactional
+    public UserModel saveUser(CreateUserRequest createUserRequest) {
+        if (Boolean.TRUE.equals(personExist(createUserRequest))) {
+            throw new UserException(ErrorCode.PERSON_ALREADY_EXIST.getError());
+        } else {
+            UserModel user = convertToUserModel(createUserRequest);
+            return userRepository.save(user);
+        }
+    }
+
+    private Boolean personExist(CreateUserRequest userRequest) {
+        return userRepository.existsByEmail(userRequest.getEmail());
     }
 
     @Override
-    public UserModel createUser(UserModel userModel) {
-        userModel.setPassword(passwordEncoder.encode(String.valueOf(userModel.getPassword())).toCharArray());
-        return userRepository.save(userModel);
+    public Boolean passwordMatch(String inPassword, String codePassword) {
+        return passwordEncoder.matches(inPassword, codePassword);
+    }
+
+    private UserModel convertToUserModel(CreateUserRequest request) {
+        return UserModel.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .username(request.getUsername())
+                .roles(request.getRoles().stream()
+                        .map(role -> RoleType.valueOf(role.toUpperCase()))
+                        .collect(Collectors.toSet()))
+                .build();
     }
 }

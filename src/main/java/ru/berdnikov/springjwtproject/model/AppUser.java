@@ -14,15 +14,15 @@ import java.util.Collection;
 @Getter
 @Setter
 public class AppUser extends User {
-    private String userId;
+    private Long userId;
 
     public AppUser(String username, String userId, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
-        this.userId = userId;
+        this.userId = Long.valueOf(userId);
     }
 
     public AppUser(UserModel userModel, Collection<? extends GrantedAuthority> authorities) {
         super(userModel.getUsername(), userModel.getPassword().toString(), authorities);
-        this.userId = userId;
+        this.userId = userModel.getId();
     }
 }

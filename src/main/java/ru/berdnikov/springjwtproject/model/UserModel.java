@@ -29,7 +29,7 @@ public class UserModel {
     private String email;
 
     @Column(name = "password", nullable = false)
-    private char[] password;
+    private String password;
 
     @ElementCollection(targetClass = RoleType.class)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
