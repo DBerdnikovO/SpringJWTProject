@@ -2,6 +2,7 @@ package ru.berdnikov.springjwtproject.service;
 
 import org.springframework.http.ResponseEntity;
 import ru.berdnikov.springjwtproject.dto.AuthTokenDTO;
+import ru.berdnikov.springjwtproject.dto.TokenData;
 
 /**
  * @author danilaberdnikov on ResponseService.
@@ -10,7 +11,7 @@ import ru.berdnikov.springjwtproject.dto.AuthTokenDTO;
 public interface ResponseService {
     ResponseEntity<AuthTokenDTO> error(String error);
 
-    ResponseEntity<AuthTokenDTO> success(String token);
+    ResponseEntity<TokenData> success(String passwordToken, String refreshToken);
 
     ResponseEntity<String> passwordError();
 

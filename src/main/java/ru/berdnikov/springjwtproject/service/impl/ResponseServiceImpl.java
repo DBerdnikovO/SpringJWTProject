@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.berdnikov.springjwtproject.dto.AuthTokenDTO;
+import ru.berdnikov.springjwtproject.dto.TokenData;
 import ru.berdnikov.springjwtproject.service.ResponseService;
 import ru.berdnikov.springjwtproject.util.ErrorCode;
 
@@ -19,10 +20,8 @@ public class ResponseServiceImpl implements ResponseService {
     }
 
     @Override
-    public ResponseEntity<AuthTokenDTO> success(String token) {
-        return ResponseEntity.ok(AuthTokenDTO.builder()
-                .token(token)
-                .build());
+    public ResponseEntity<TokenData> success(String passwordToken, String refreshToken) {
+        return ResponseEntity.ok(new TokenData(passwordToken, refreshToken));
     }
 
     @Override

@@ -11,15 +11,9 @@ import java.util.Optional;
  * @project SpringJWTProject
  */
 public interface UserService {
-    Optional<UserModel> findUserByEmail(String email);
-
-    Optional<UserModel> findUserById(Long id);
-
-    List<UserModel> findAll();
+    UserModel findUserByEmail(String email);
 
     UserModel saveUser(CreateUserRequestDTO createUserRequestDTO);
-
-//    UserModel createUser(CreateUserRequestDTO userRequest);
 
     Boolean passwordMatch(String inPassword, String codePassword);
 }

@@ -3,11 +3,13 @@ package ru.berdnikov.springjwtproject.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ru.berdnikov.springjwtproject.dto.AuthTokenDTO;
 import ru.berdnikov.springjwtproject.dto.CreateUserRequestDTO;
-import ru.berdnikov.springjwtproject.model.AppUser;
+import ru.berdnikov.springjwtproject.dto.TokenData;
 import ru.berdnikov.springjwtproject.model.UserModel;
-import ru.berdnikov.springjwtproject.service.*;
+import ru.berdnikov.springjwtproject.service.AuthService;
+import ru.berdnikov.springjwtproject.service.ResponseService;
+import ru.berdnikov.springjwtproject.service.SecurityService;
+import ru.berdnikov.springjwtproject.service.UserService;
 
 import java.util.Optional;
 
@@ -19,31 +21,34 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final UserService userService;
-    private final TokenService tokenService;
-    private final UserCustomDetailsService userCustomDetailsService;
+    private final SecurityService securityService;
     private final ResponseService responseService;
 
     @Override
-    public ResponseEntity<AuthTokenDTO> registration(CreateUserRequestDTO userRequest) {
+    public ResponseEntity<TokenData> registration(CreateUserRequestDTO userRequest) {
         UserModel userModel = userService.saveUser(userRequest);
-        String token = tokenService.generateToken(
-                userModel.getUsername(),
-                userModel.getId(),
-                userModel.getRoles().stream().map(Enum::name).toList());
-        return responseService.success(token);
+        String passwordTokenForUser = securityService.generatePasswordTokenForUser(userModel);
+        String refreshTokenForUser = securityService.generateRefreshTokenForUser(userModel);
+        return responseService.success(passwordTokenForUser, refreshTokenForUser);
     }
 
     @Override
     public ResponseEntity<?> login(CreateUserRequestDTO userRequest) {
-        Optional<AppUser> optionalPerson = Optional.ofNullable(userCustomDetailsService.loadUserByUsername(userRequest.getEmail()));
-        return optionalPerson.map(person -> {
-            String codePassword = person.getPassword().replaceAll("[\\[\\], ]", "");
+        Optional<UserModel> optionalUserModel = Optional.ofNullable(userService.findUserByEmail(userRequest.getEmail()));
+        return optionalUserModel.map(userModel -> {
+            String codePassword = userModel.getPassword().replaceAll("[\\[\\], ]", "");
             if (Boolean.TRUE.equals(userService.passwordMatch(userRequest.getPassword(), codePassword))) {
-                String token = tokenService.generateToken(person.getUsername(), person.getUserId(), person.getAuthorities());
-                return responseService.success(token);
+                String passwordTokenForUser = securityService.generatePasswordTokenForUser(userModel);
+                String refreshTokenForUser = securityService.generateRefreshTokenForUser(userModel);
+                return responseService.success(passwordTokenForUser, refreshTokenForUser);
             } else {
                 return responseService.passwordError();
             }
         }).orElse(responseService.emailError(userRequest.getEmail()));
+    }
+
+    @Override
+    public ResponseEntity<?> refresh(String userToken) {
+        return null;
     }
 }

@@ -1,12 +1,21 @@
 package ru.berdnikov.springjwtproject.service;
 
-import reactor.core.publisher.Mono;
-import ru.berdnikov.springjwtproject.dto.TokenData;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import ru.berdnikov.springjwtproject.model.UserModel;
 
 /**
  * @author danilaberdnikov on SecurityService.
  * @project SpringJWTProject
  */
 public interface SecurityService {
-    TokenData processRefreshToken(String refreshTokenValue) ;
+
+    String generatePasswordTokenForUser(UserModel userModel);
+
+    String generateRefreshTokenForUser(UserModel userModel);
+
+    UsernamePasswordAuthenticationToken toAuthentication(String token);
+
+    boolean validateAccessToken(String accessToken);
+
+    boolean validateRefreshToken(String refreshToken);
 }

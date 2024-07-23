@@ -10,14 +10,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
-import ru.berdnikov.springjwtproject.service.TokenService;
-import ru.berdnikov.springjwtproject.service.impl.TokenServiceImpl;
+import ru.berdnikov.springjwtproject.service.SecurityService;
 
 import java.io.IOException;
 
@@ -31,15 +29,15 @@ import java.io.IOException;
 public class JWTAuthenticationFilter extends GenericFilterBean {
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
-    private final TokenService tokenService;
+    private final SecurityService securityService;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         try {
             HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
             String jwt = resolveToken(httpServletRequest);
-            if (StringUtils.hasText(jwt) && tokenService.validateAccessToken(jwt) && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UsernamePasswordAuthenticationToken authentication = tokenService.toAuthentication(jwt);
+            if (StringUtils.hasText(jwt) && securityService.validateAccessToken(jwt) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UsernamePasswordAuthenticationToken authentication = securityService.toAuthentication(jwt);
                 authentication.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(httpServletRequest)
                 );

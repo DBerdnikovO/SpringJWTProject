@@ -1,6 +1,7 @@
 package ru.berdnikov.springjwtproject.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,18 +28,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Optional<UserModel> findUserByEmail(String email) {
-        return userRepository.findUserModelByEmail(email);
-    }
-
-    @Override
-    public Optional<UserModel> findUserById(Long id) {
-        return userRepository.findById(id);
-    }
-
-    @Override
-    public List<UserModel> findAll() {
-        return userRepository.findAll();
+    public UserModel findUserByEmail(String email) {
+        return userRepository.findUserModelByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
     }
 
     @Override
