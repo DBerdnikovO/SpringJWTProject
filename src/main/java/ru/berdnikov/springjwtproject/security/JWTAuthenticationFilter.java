@@ -9,11 +9,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
+import ru.berdnikov.springjwtproject.service.TokenService;
 import ru.berdnikov.springjwtproject.service.impl.TokenServiceImpl;
 
 import java.io.IOException;
@@ -28,30 +31,26 @@ import java.io.IOException;
 public class JWTAuthenticationFilter extends GenericFilterBean {
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
-    private final TokenServiceImpl tokenServiceImpl;
+    private final TokenService tokenService;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         try {
             HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
             String jwt = resolveToken(httpServletRequest);
-            if (StringUtils.hasText(jwt) && tokenServiceImpl.validateToken(jwt)) {
-                Authentication authentication = tokenServiceImpl.toAuthentication(jwt);
+            if (StringUtils.hasText(jwt) && tokenService.validateAccessToken(jwt) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UsernamePasswordAuthenticationToken authentication = tokenService.toAuthentication(jwt);
+                authentication.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(httpServletRequest)
+                );
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-
-            filterChain.doFilter(servletRequest, servletResponse);
-
-            this.resetAuthenticationAfterRequest();
         } catch (ExpiredJwtException eje) {
             log.info("Security exception for user {} - {}", eje.getClaims().getSubject(), eje.getMessage());
             ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            log.debug("Exception " + eje.getMessage(), eje);
+            log.debug("Exception: ", eje);
         }
-    }
-
-    private void resetAuthenticationAfterRequest() {
-        SecurityContextHolder.getContext().setAuthentication(null);
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     private String resolveToken(HttpServletRequest request) {

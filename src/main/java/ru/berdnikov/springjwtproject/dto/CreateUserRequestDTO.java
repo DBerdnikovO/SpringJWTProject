@@ -8,13 +8,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author danilaberdnikov on CreateUserRequest.
+ * @author danilaberdnikov on CreateUserRequestDTO.
  * @project SpringJWTProject
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateUserRequest {
+public class CreateUserRequestDTO {
     private String username;
     private String password;
     private String email;

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.berdnikov.springjwtproject.dto.CreateUserRequest;
+import ru.berdnikov.springjwtproject.dto.CreateUserRequestDTO;
 import ru.berdnikov.springjwtproject.exception.UserException;
 import ru.berdnikov.springjwtproject.model.RoleType;
 import ru.berdnikov.springjwtproject.model.UserModel;
@@ -43,16 +43,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserModel saveUser(CreateUserRequest createUserRequest) {
-        if (Boolean.TRUE.equals(personExist(createUserRequest))) {
+    public UserModel saveUser(CreateUserRequestDTO createUserRequestDTO) {
+        if (Boolean.TRUE.equals(personExist(createUserRequestDTO))) {
             throw new UserException(ErrorCode.PERSON_ALREADY_EXIST.getError());
         } else {
-            UserModel user = convertToUserModel(createUserRequest);
+            UserModel user = convertToUserModel(createUserRequestDTO);
             return userRepository.save(user);
         }
     }
 
-    private Boolean personExist(CreateUserRequest userRequest) {
+    private Boolean personExist(CreateUserRequestDTO userRequest) {
         return userRepository.existsByEmail(userRequest.getEmail());
     }
 
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
         return passwordEncoder.matches(inPassword, codePassword);
     }
 
-    private UserModel convertToUserModel(CreateUserRequest request) {
+    private UserModel convertToUserModel(CreateUserRequestDTO request) {
         return UserModel.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))

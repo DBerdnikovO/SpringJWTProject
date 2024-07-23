@@ -1,8 +1,9 @@
 package ru.berdnikov.springjwtproject.service.impl;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,15 +11,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.berdnikov.springjwtproject.model.AppUser;
 import ru.berdnikov.springjwtproject.service.TokenService;
 
+import javax.crypto.SecretKey;
+import java.security.Key;
 import java.time.Duration;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -26,10 +27,10 @@ import java.util.stream.Collectors;
  * @project SpringJWTProject
  */
 @Slf4j
-@Component
+@Service
 public class TokenServiceImpl implements TokenService {
+    private static final String ROLE_PREFIX = "ROLE_";
     private static final String AUTHORITIES_KEY = "auth";
-
     private static final String ID_CLAIM = "id";
 
     @Value("${jwt.secret}")
@@ -38,54 +39,77 @@ public class TokenServiceImpl implements TokenService {
     @Value("${jwt.tokenExpiration}")
     private Duration tokenExpiration;
 
-    public String generateToken(Authentication authentication, String id) {
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
+    @Value("${jwt.refreshTokenExpiration}")
+    private Duration refreshTokenExpiration;
+
+    @Override
+    public String generateToken(String username, Long id, List<String> roles) {
+        return generateToken(username, id, roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList()));
+    }
+
+    @Override
+    public String generateToken(String username, Long id, Collection<? extends GrantedAuthority> authorities) {
+        String authoritiesString = authorities.stream()
+                .map(authority -> ROLE_PREFIX + authority.getAuthority())
                 .collect(Collectors.joining(","));
 
-        ZonedDateTime now = ZonedDateTime.now();
-        ZonedDateTime expirationDateTime = now.plus(tokenExpiration);
-
-        Date issueDate = Date.from(now.toInstant());
-        Date expirationDate = Date.from(expirationDateTime.toInstant());
-
         return Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities)
+                .setSubject(username)
+                .claim(AUTHORITIES_KEY, authoritiesString)
                 .claim(ID_CLAIM, id)
-                .signWith(SignatureAlgorithm.HS512, Base64.getEncoder().encodeToString(jwtSecret.getBytes()))
-                .setIssuedAt(issueDate)
-                .setExpiration(expirationDate)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date().getTime() + tokenExpiration.toMillis())))
                 .compact();
     }
 
-    public Authentication toAuthentication(String token) {
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret)
+    @Override
+    public UsernamePasswordAuthenticationToken toAuthentication(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        String id = claims.get(ID_CLAIM, String.class);
-
+        String subject = claims.getSubject();
+        Long id = claims.get(ID_CLAIM, Long.class);
         Collection<? extends GrantedAuthority> authorities = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        String subject = claims.getSubject();
-
-
-        AppUser principal = new AppUser(subject, id, "", authorities);
-
+        AppUser principal = new AppUser(subject, id.toString(), "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
-    public boolean validateToken(String authToken) {
+    @Override
+    public boolean validateAccessToken(String accessToken) {
+        return validateToken(accessToken, getSigningKey());
+    }
+
+    private boolean validateToken(String token, Key secret) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).build().parseClaimsJws(authToken);
+            Jwts.parser()
+                    .setSigningKey(secret)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
+        } catch (ExpiredJwtException e) {
+            log.error("Token expired: {}", e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            log.error("Unsupported JWT: {}", e.getMessage());
+        } catch (MalformedJwtException e) {
+            log.error("Malformed JWT: {}", e.getMessage());
+        } catch (SignatureException e) {
+            log.error("Invalid signature: {}", e.getMessage());
         } catch (Exception e) {
-            log.info("Invalid JWT signature: " + e.getMessage());
-            log.debug("Exception " + e.getMessage(), e);
-            return false;
+            log.error("Invalid token: {}", e.getMessage());
         }
+        return false;
+    }
+
+    private Key getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }

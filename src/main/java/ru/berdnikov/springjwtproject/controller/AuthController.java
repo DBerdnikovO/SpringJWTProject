@@ -5,7 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.berdnikov.springjwtproject.dto.CreateUserRequest;
+import ru.berdnikov.springjwtproject.dto.CreateUserRequestDTO;
+import ru.berdnikov.springjwtproject.dto.RefreshTokenRequest;
 import ru.berdnikov.springjwtproject.service.AuthService;
 
 /**
@@ -18,12 +19,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/reg")
-    public ResponseEntity registerAndGetToken(@RequestBody CreateUserRequest userRequest) {
-        return ResponseEntity.ok(authService.register(userRequest));
+    public ResponseEntity registerAndGetToken(@RequestBody CreateUserRequestDTO userRequest) {
+        return ResponseEntity.ok(authService.registration(userRequest));
     }
 
     @PostMapping("/login")
-    public ResponseEntity loginAndGetToken(@RequestBody CreateUserRequest userRequest) {
+    public ResponseEntity loginAndGetToken(@RequestBody CreateUserRequestDTO userRequest) {
         return ResponseEntity.ok(authService.login(userRequest));
     }
+
 }

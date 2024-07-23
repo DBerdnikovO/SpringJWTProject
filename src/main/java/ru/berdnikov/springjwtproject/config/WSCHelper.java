@@ -14,10 +14,10 @@ public class WSCHelper {
 
     protected enum Resources {
         LOGIN("/login/**"),
-        REGIS("/reg/**"),
+        REGISTRATION("/reg/**"),
         ADMIN("/admin/**"),
         USER("/user/**"),
-        PUB("/public/**");
+        PUBLIC("/public/**");
 
         private String path;
 
