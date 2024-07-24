@@ -20,6 +20,7 @@ import java.util.UUID;
  * @project SpringJWTProject
  */
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final JWTConfig jwtConfig;

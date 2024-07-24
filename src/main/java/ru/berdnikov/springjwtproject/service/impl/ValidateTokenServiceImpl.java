@@ -22,16 +22,10 @@ public class ValidateTokenServiceImpl implements ValidateTokenService {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-
-    public boolean validateAccessToken(String accessToken) {
-        return validateToken(accessToken, getSigningKey());
-    }
-
-
-    private boolean validateToken(String token, Key secret) {
+    public boolean validateToken(String token) {
         try {
             Jwts.parser()
-                    .setSigningKey(secret)
+                    .setSigningKey(getSigningKey())
                     .build()
                     .parseClaimsJws(token);
             return true;

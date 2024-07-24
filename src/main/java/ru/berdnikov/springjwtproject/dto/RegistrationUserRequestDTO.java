@@ -12,8 +12,8 @@ import java.util.Set;
  * @project SpringJWTProject
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class RegistrationUserRequestDTO {
     private String username;
     private String password;

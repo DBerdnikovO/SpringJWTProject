@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
  * @project SpringJWTProject
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class LoginUserRequestDTO {
     private String email;
     private String password;

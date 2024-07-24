@@ -20,17 +20,20 @@ import java.util.stream.Collectors;
  * @project SpringJWTProject
  */
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional(readOnly = true)
     public UserModel findUserByEmail(String email) {
         return userRepository.findUserModelByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserModel findUserById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(id.toString()));
     }

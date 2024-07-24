@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
  * @project SpringJWTProject
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class RefreshTokenRequestDTO {
     private String refreshToken;
 }
