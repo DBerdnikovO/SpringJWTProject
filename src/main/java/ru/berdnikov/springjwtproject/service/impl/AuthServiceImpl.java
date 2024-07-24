@@ -6,10 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.berdnikov.springjwtproject.dto.CreateUserRequestDTO;
 import ru.berdnikov.springjwtproject.dto.TokenData;
 import ru.berdnikov.springjwtproject.model.UserModel;
-import ru.berdnikov.springjwtproject.service.AuthService;
-import ru.berdnikov.springjwtproject.service.ResponseService;
-import ru.berdnikov.springjwtproject.service.SecurityService;
-import ru.berdnikov.springjwtproject.service.UserService;
+import ru.berdnikov.springjwtproject.service.*;
 
 import java.util.Optional;
 
@@ -21,14 +18,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final UserService userService;
-    private final SecurityService securityService;
+    private final PasswordTokenService passwordTokenService;
+    private final RefreshTokenService refreshTokenService;
     private final ResponseService responseService;
 
     @Override
     public ResponseEntity<TokenData> registration(CreateUserRequestDTO userRequest) {
         UserModel userModel = userService.saveUser(userRequest);
-        String passwordTokenForUser = securityService.generatePasswordTokenForUser(userModel);
-        String refreshTokenForUser = securityService.generateRefreshTokenForUser(userModel);
+        String passwordTokenForUser = passwordTokenService.generatePasswordTokenForUser(userModel);
+        String refreshTokenForUser = refreshTokenService.generateRefreshTokenForUser(userModel);
         return responseService.success(passwordTokenForUser, refreshTokenForUser);
     }
 
@@ -36,10 +34,10 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity<?> login(CreateUserRequestDTO userRequest) {
         Optional<UserModel> optionalUserModel = Optional.ofNullable(userService.findUserByEmail(userRequest.getEmail()));
         return optionalUserModel.map(userModel -> {
-            String codePassword = userModel.getPassword().replaceAll("[\\[\\], ]", "");
-            if (Boolean.TRUE.equals(userService.passwordMatch(userRequest.getPassword(), codePassword))) {
-                String passwordTokenForUser = securityService.generatePasswordTokenForUser(userModel);
-                String refreshTokenForUser = securityService.generateRefreshTokenForUser(userModel);
+            String password = userModel.getPassword().replaceAll("[\\[\\], ]", "");
+            if (Boolean.TRUE.equals(userService.passwordMatch(userRequest.getPassword(), password))) {
+                String passwordTokenForUser = passwordTokenService.generatePasswordTokenForUser(userModel);
+                String refreshTokenForUser = refreshTokenService.generateRefreshTokenForUser(userModel);
                 return responseService.success(passwordTokenForUser, refreshTokenForUser);
             } else {
                 return responseService.passwordError();

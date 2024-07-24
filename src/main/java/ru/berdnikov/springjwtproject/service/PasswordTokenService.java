@@ -4,18 +4,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import ru.berdnikov.springjwtproject.model.UserModel;
 
 /**
- * @author danilaberdnikov on SecurityService.
+ * @author danilaberdnikov on PasswordTokenService.
  * @project SpringJWTProject
  */
-public interface SecurityService {
-
+public interface PasswordTokenService {
     String generatePasswordTokenForUser(UserModel userModel);
 
-    String generateRefreshTokenForUser(UserModel userModel);
-
     UsernamePasswordAuthenticationToken toAuthentication(String token);
-
-    boolean validateAccessToken(String accessToken);
-
-    boolean validateRefreshToken(String refreshToken);
 }

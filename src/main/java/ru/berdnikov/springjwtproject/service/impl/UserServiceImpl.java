@@ -13,8 +13,6 @@ import ru.berdnikov.springjwtproject.repository.UserRepository;
 import ru.berdnikov.springjwtproject.service.UserService;
 import ru.berdnikov.springjwtproject.util.ErrorCode;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -36,7 +34,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserModel saveUser(CreateUserRequestDTO createUserRequestDTO) {
         if (Boolean.TRUE.equals(personExist(createUserRequestDTO))) {
-            throw new UserException(ErrorCode.PERSON_ALREADY_EXIST.getError());
+            throw new UserException(ErrorCode.USER_ALREADY_EXIST.getError());
         } else {
             UserModel user = convertToUserModel(createUserRequestDTO);
             return userRepository.save(user);

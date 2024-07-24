@@ -15,7 +15,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
-import ru.berdnikov.springjwtproject.service.SecurityService;
+import ru.berdnikov.springjwtproject.service.PasswordTokenService;
+import ru.berdnikov.springjwtproject.service.ValidateTokenService;
 
 import java.io.IOException;
 
@@ -29,15 +30,16 @@ import java.io.IOException;
 public class JWTAuthenticationFilter extends GenericFilterBean {
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
-    private final SecurityService securityService;
+    private final PasswordTokenService passwordTokenService;
+    private final ValidateTokenService validateTokenService;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         try {
             HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
             String jwt = resolveToken(httpServletRequest);
-            if (StringUtils.hasText(jwt) && securityService.validateAccessToken(jwt) && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UsernamePasswordAuthenticationToken authentication = securityService.toAuthentication(jwt);
+            if (StringUtils.hasText(jwt) && validateTokenService.validateAccessToken(jwt) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UsernamePasswordAuthenticationToken authentication = passwordTokenService.toAuthentication(jwt);
                 authentication.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(httpServletRequest)
                 );
