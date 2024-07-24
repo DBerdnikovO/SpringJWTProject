@@ -1,6 +1,7 @@
 package ru.berdnikov.springjwtproject.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.berdnikov.springjwtproject.dto.LoginUserRequestDTO;
@@ -18,6 +19,7 @@ import java.util.Optional;
  * @project SpringJWTProject
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final UserService userService;
@@ -33,14 +35,17 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity<?> login(LoginUserRequestDTO userRequest) {
-        Optional<UserModel> optionalUserModel = Optional.ofNullable(userService.findUserByEmail(userRequest.getEmail()));
+        UserModel foundUser = userService.findUserByEmail(userRequest.getEmail());
+
+        Optional<UserModel> optionalUserModel = Optional.ofNullable(foundUser);
         return optionalUserModel.map(userModel -> {
             if (Boolean.TRUE.equals(userService.passwordMatch(userRequest.getPassword(), userModel.getPassword()))) {
-                return responseService.success(createTokenData(userModel));
+                TokenDataDTO tokenDataDTO = createTokenData(userModel);
+                return responseService.success(tokenDataDTO);
             } else {
                 return responseService.passwordError();
             }
-        }).orElse(responseService.emailError(userRequest.getEmail()));
+        }).orElseGet(() -> responseService.emailError(userRequest.getEmail()));
     }
 
     @Override

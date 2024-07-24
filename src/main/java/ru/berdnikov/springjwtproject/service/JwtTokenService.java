@@ -11,4 +11,6 @@ public interface JwtTokenService {
     String generatePasswordTokenForUser(UserModel userModel);
 
     UsernamePasswordAuthenticationToken toAuthentication(String token);
+
+    boolean validateToken(String token);
 }

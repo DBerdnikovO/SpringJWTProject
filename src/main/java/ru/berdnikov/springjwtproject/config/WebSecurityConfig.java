@@ -51,10 +51,8 @@ public class WebSecurityConfig {
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(WSCHelper.Resources.AUTH.getPath()).permitAll()
-                        .requestMatchers(WSCHelper.Resources.REFRESH.getPath()).permitAll()
                         .requestMatchers(WSCHelper.Resources.PUBLIC.getPath()).permitAll()
-                        .requestMatchers(WSCHelper.Resources.SWAGGER.getPath()).permitAll()
-                        .requestMatchers(WSCHelper.Resources.SWAGGERV3.getPath()).permitAll()
+                        .requestMatchers(WSCHelper.Resources.SWAGGER.getPath(), WSCHelper.Resources.SWAGGERV3.getPath()).permitAll()
                         .requestMatchers(WSCHelper.Resources.ADMIN.getPath()).hasRole(WSCHelper.Roles.ADMIN.name())
                         .requestMatchers(WSCHelper.Resources.USER.getPath()).hasRole(WSCHelper.Roles.USER.name())
                         .anyRequest().authenticated()

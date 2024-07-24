@@ -14,7 +14,6 @@ public class WSCHelper {
 
     protected enum Resources {
         AUTH("/auth/**"),
-        REFRESH("/refresh/**"),
         ADMIN("/admin/**"),
         USER("/user/**"),
         PUBLIC("/public/**"),

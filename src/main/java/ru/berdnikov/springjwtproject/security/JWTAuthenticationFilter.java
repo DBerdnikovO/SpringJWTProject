@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 import ru.berdnikov.springjwtproject.service.JwtTokenService;
-import ru.berdnikov.springjwtproject.service.ValidateTokenService;
 
 import java.io.IOException;
 
@@ -32,14 +31,13 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
     private final int BEGIN_INDEX = 7;
 
     private final JwtTokenService jwtTokenService;
-    private final ValidateTokenService validateTokenService;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         try {
             HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
             String jwt = resolveToken(httpServletRequest);
-            if (StringUtils.hasText(jwt) && validateTokenService.validateToken(jwt) && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (StringUtils.hasText(jwt) && jwtTokenService.validateToken(jwt) && SecurityContextHolder.getContext().getAuthentication() == null) {
                 Authentication authentication = jwtTokenService.toAuthentication(jwt);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

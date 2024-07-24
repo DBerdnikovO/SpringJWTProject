@@ -1,9 +1,8 @@
 package ru.berdnikov.springjwtproject.service.impl;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,6 +12,7 @@ import ru.berdnikov.springjwtproject.model.AppUser;
 import ru.berdnikov.springjwtproject.model.UserModel;
 import ru.berdnikov.springjwtproject.service.JwtTokenService;
 
+import javax.crypto.SecretKey;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
  * @author danilaberdnikov on JwtTokenServiceImpl.
  * @project SpringJWTProject
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JwtTokenServiceImpl implements JwtTokenService {
@@ -63,5 +64,32 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
         AppUser principal = new AppUser(subject, id, "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+    }
+
+    @Override
+    public boolean validateToken(String token) {
+        try {
+            Jws<Claims> claimsJws = Jwts.parser()
+                    .setSigningKey(jwtConfig.getSigningKey())
+                    .build()
+                    .parseClaimsJws(token);
+
+            if (!SignatureAlgorithm.HS512.getValue().equals(claimsJws.getHeader().getAlgorithm())) {
+                log.error("Unsupported JWT algorithm: {}", claimsJws.getHeader().getAlgorithm());
+                return false;
+            }
+            return true;
+        } catch (ExpiredJwtException e) {
+            log.error("Token expired: {}", e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            log.error("Unsupported JWT: {}", e.getMessage());
+        } catch (MalformedJwtException e) {
+            log.error("Malformed JWT: {}", e.getMessage());
+        } catch (SignatureException e) {
+            log.error("Invalid signature: {}", e.getMessage());
+        } catch (Exception e) {
+            log.error("Invalid token: {}", e.getMessage());
+        }
+        return false;
     }
 }
