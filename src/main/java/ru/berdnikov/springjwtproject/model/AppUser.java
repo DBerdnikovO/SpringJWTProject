@@ -17,9 +17,9 @@ import java.util.Objects;
 public class AppUser extends User {
     private Long userId;
 
-    public AppUser(String username, String userId, String password, Collection<? extends GrantedAuthority> authorities) {
+    public AppUser(String username, Long userId, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
-        this.userId = Long.valueOf(userId);
+        this.userId = userId;
     }
 
     @Override

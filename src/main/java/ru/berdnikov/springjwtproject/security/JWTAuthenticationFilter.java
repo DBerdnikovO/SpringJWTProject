@@ -9,13 +9,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
-import ru.berdnikov.springjwtproject.service.PasswordTokenService;
+import ru.berdnikov.springjwtproject.service.JwtTokenService;
 import ru.berdnikov.springjwtproject.service.ValidateTokenService;
 
 import java.io.IOException;
@@ -28,9 +27,11 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JWTAuthenticationFilter extends GenericFilterBean {
-    public static final String AUTHORIZATION_HEADER = "Authorization";
+    private final String AUTHORIZATION_HEADER = "Authorization";
+    private final String BEARER_PREFIX = "Bearer ";
+    private final int BEGIN_INDEX = 7;
 
-    private final PasswordTokenService passwordTokenService;
+    private final JwtTokenService jwtTokenService;
     private final ValidateTokenService validateTokenService;
 
     @Override
@@ -39,10 +40,7 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
             HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
             String jwt = resolveToken(httpServletRequest);
             if (StringUtils.hasText(jwt) && validateTokenService.validateAccessToken(jwt) && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UsernamePasswordAuthenticationToken authentication = passwordTokenService.toAuthentication(jwt);
-                authentication.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(httpServletRequest)
-                );
+                Authentication authentication = jwtTokenService.toAuthentication(jwt);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (ExpiredJwtException eje) {
@@ -55,8 +53,8 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(BEGIN_INDEX);
         }
         return null;
     }

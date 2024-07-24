@@ -20,13 +20,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/reg")
-    public ResponseEntity registerAndGetToken(@RequestBody RegistrationUserRequestDTO userRequest) {
-        return authService.registration(userRequest);
+    public ResponseEntity registerAndGetToken(@RequestBody RegistrationUserRequestDTO registrationUserRequestDTO) {
+        return authService.registration(registrationUserRequestDTO);
     }
 
     @PostMapping("/login")
-    public ResponseEntity loginAndGetToken(@RequestBody RegistrationUserRequestDTO userRequest) {
-        return authService.login(userRequest);
+    public ResponseEntity loginAndGetToken(@RequestBody LoginUserRequestDTO loginUserRequestDTO) {
+        return authService.login(loginUserRequestDTO);
     }
 
     @PostMapping("/refresh")

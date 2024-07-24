@@ -4,10 +4,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import ru.berdnikov.springjwtproject.model.UserModel;
 
 /**
- * @author danilaberdnikov on PasswordTokenService.
+ * @author danilaberdnikov on JwtTokenService.
  * @project SpringJWTProject
  */
-public interface PasswordTokenService {
+public interface JwtTokenService {
     String generatePasswordTokenForUser(UserModel userModel);
 
     UsernamePasswordAuthenticationToken toAuthentication(String token);

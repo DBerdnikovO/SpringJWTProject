@@ -3,6 +3,7 @@ package ru.berdnikov.springjwtproject.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import ru.berdnikov.springjwtproject.dto.LoginUserRequestDTO;
 import ru.berdnikov.springjwtproject.dto.RegistrationUserRequestDTO;
 import ru.berdnikov.springjwtproject.dto.TokenDataDTO;
 import ru.berdnikov.springjwtproject.model.RefreshToken;
@@ -20,7 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final UserService userService;
-    private final PasswordTokenService passwordTokenService;
+    private final JwtTokenService jwtTokenService;
     private final RefreshTokenService refreshTokenService;
     private final ResponseService responseService;
 
@@ -31,11 +32,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<?> login(RegistrationUserRequestDTO userRequest) {
+    public ResponseEntity<?> login(LoginUserRequestDTO userRequest) {
         Optional<UserModel> optionalUserModel = Optional.ofNullable(userService.findUserByEmail(userRequest.getEmail()));
         return optionalUserModel.map(userModel -> {
-            String password = userModel.getPassword().replaceAll("[\\[\\], ]", "");
-            if (Boolean.TRUE.equals(userService.passwordMatch(userRequest.getPassword(), password))) {
+            if (Boolean.TRUE.equals(userService.passwordMatch(userRequest.getPassword(), userModel.getPassword()))) {
                 return responseService.success(createTokenData(userModel));
             } else {
                 return responseService.passwordError();
@@ -57,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private TokenDataDTO createTokenData(UserModel userModel) {
-        String passwordTokenForUser = passwordTokenService.generatePasswordTokenForUser(userModel);
+        String passwordTokenForUser = jwtTokenService.generatePasswordTokenForUser(userModel);
         String refreshTokenForUser = refreshTokenService.generateRefreshTokenForUser(userModel.getId());
         return new TokenDataDTO(passwordTokenForUser, refreshTokenForUser);
     }

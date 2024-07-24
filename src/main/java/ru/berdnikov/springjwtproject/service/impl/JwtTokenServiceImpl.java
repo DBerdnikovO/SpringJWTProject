@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import ru.berdnikov.springjwtproject.config.JWTConfig;
 import ru.berdnikov.springjwtproject.model.AppUser;
 import ru.berdnikov.springjwtproject.model.UserModel;
-import ru.berdnikov.springjwtproject.service.PasswordTokenService;
+import ru.berdnikov.springjwtproject.service.JwtTokenService;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,12 +19,12 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 /**
- * @author danilaberdnikov on PasswordTokenServiceImpl.
+ * @author danilaberdnikov on JwtTokenServiceImpl.
  * @project SpringJWTProject
  */
 @Service
 @RequiredArgsConstructor
-public class PasswordTokenServiceImpl implements PasswordTokenService {
+public class JwtTokenServiceImpl implements JwtTokenService {
     private final JWTConfig jwtConfig;
 
     private static final String ROLE_PREFIX = "ROLE_";
@@ -49,7 +49,6 @@ public class PasswordTokenServiceImpl implements PasswordTokenService {
                 .compact();
     }
 
-
     @Override
     public UsernamePasswordAuthenticationToken toAuthentication(String token) {
         Claims claims = Jwts.parser()
@@ -63,7 +62,7 @@ public class PasswordTokenServiceImpl implements PasswordTokenService {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        AppUser principal = new AppUser(subject, id.toString(), "", authorities);
+        AppUser principal = new AppUser(subject, id, "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 }

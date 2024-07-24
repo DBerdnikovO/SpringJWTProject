@@ -10,7 +10,7 @@ import java.time.Instant;
  * @author danilaberdnikov on RefreshToken.
  * @project SpringJWTProject
  */
-@Data
+@Getter
 @Entity
 @Builder
 @Table(name = "refresh_tokens")
