@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import ru.berdnikov.springjwtproject.service.ValidateTokenService;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
 
 /**
  * @author danilaberdnikov on ValidateTokenServiceImpl.

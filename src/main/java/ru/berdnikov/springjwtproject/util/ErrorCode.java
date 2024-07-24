@@ -5,11 +5,11 @@ package ru.berdnikov.springjwtproject.util;
  * @project SpringJWTProject
  */
 public enum ErrorCode {
-    USER_NOT_FOUND("USER NOT FOUND"),
-    INCORRECT_PASSWORD("INCORRECT PASSWORD"),
-    INCORRECT_REFRESHTOKEN("INCORRECT REFRESHTOKEN"),
-    EXPIRED_REFRESHTOKEN("EXPIRED REFRESHTOKEN"),
-    USER_ALREADY_EXIST("PERSON ALREADY EXIST");
+    USER_NOT_FOUND("User not found"),
+    INCORRECT_PASSWORD("Incorrect password"),
+    INCORRECT_REFRESHTOKEN("Incorrect refresh token"),
+    EXPIRED_REFRESHTOKEN("Expired refresh token"),
+    USER_ALREADY_EXIST("User already exist");
 
     private final String error;
 

@@ -1,13 +1,11 @@
 package ru.berdnikov.springjwtproject.service.impl;
 
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.berdnikov.springjwtproject.config.JWTConfig;
 import ru.berdnikov.springjwtproject.exception.RefreshTokenException;
 import ru.berdnikov.springjwtproject.model.RefreshToken;
-import ru.berdnikov.springjwtproject.model.UserModel;
 import ru.berdnikov.springjwtproject.repository.RefreshTokenRepository;
 import ru.berdnikov.springjwtproject.service.RefreshTokenService;
 

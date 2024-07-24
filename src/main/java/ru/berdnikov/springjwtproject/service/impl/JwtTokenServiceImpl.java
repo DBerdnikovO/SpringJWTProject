@@ -25,11 +25,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class JwtTokenServiceImpl implements JwtTokenService {
-    private final JWTConfig jwtConfig;
-
     private static final String ROLE_PREFIX = "ROLE_";
     private static final String AUTHORITIES_KEY = "auth";
     private static final String ID_CLAIM = "id";
+    private final JWTConfig jwtConfig;
 
     @Override
     public String generatePasswordTokenForUser(UserModel userModel) {

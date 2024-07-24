@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import ru.berdnikov.springjwtproject.dto.ResponseExceptionDTO;
 
 /**
  * @author danilaberdnikov on AuthenticationExceptionHandler.
@@ -20,12 +19,7 @@ public class AuthenticationExceptionHandler extends ResponseEntityExceptionHandl
 
     @ExceptionHandler(AuthenticationException.class)
     @ResponseBody
-    public ResponseEntity<ResponseExceptionDTO> handleAuthenticationException(AuthenticationException ex) {
-        ResponseExceptionDTO responseExceptionDTO = new ResponseExceptionDTO(
-                HttpStatus.UNAUTHORIZED.toString(),
-                "Authentication failed: " + ex.getMessage()
-        );
-        log.error("AuthenticationException: ", ex);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseExceptionDTO);
+    public ResponseEntity<String> handleAuthenticationException(AuthenticationException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 }
