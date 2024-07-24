@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.berdnikov.springjwtproject.dto.CreateUserRequestDTO;
+import ru.berdnikov.springjwtproject.dto.RegistrationUserRequestDTO;
 import ru.berdnikov.springjwtproject.exception.UserException;
 import ru.berdnikov.springjwtproject.model.RoleType;
 import ru.berdnikov.springjwtproject.model.UserModel;
@@ -37,11 +37,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserModel saveUser(CreateUserRequestDTO createUserRequestDTO) {
-        if (Boolean.TRUE.equals(userExist(createUserRequestDTO))) {
+    public UserModel saveUser(RegistrationUserRequestDTO registrationUserRequestDTO) {
+        if (Boolean.TRUE.equals(userExist(registrationUserRequestDTO))) {
             throw new UserException(ErrorCode.USER_ALREADY_EXIST.getError());
         } else {
-            UserModel user = convertToUserModel(createUserRequestDTO);
+            UserModel user = convertToUserModel(registrationUserRequestDTO);
             return userRepository.save(user);
         }
     }
@@ -51,11 +51,11 @@ public class UserServiceImpl implements UserService {
         return passwordEncoder.matches(inPassword, codePassword);
     }
 
-    private Boolean userExist(CreateUserRequestDTO userRequest) {
+    private Boolean userExist(RegistrationUserRequestDTO userRequest) {
         return userRepository.existsByEmail(userRequest.getEmail());
     }
 
-    private UserModel convertToUserModel(CreateUserRequestDTO request) {
+    private UserModel convertToUserModel(RegistrationUserRequestDTO request) {
         return UserModel.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))

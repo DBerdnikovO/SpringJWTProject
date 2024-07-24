@@ -5,13 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @author danilaberdnikov on TokenData.
+ * @author danilaberdnikov on TokenDataDTO.
  * @project SpringJWTProject
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenData {
+public class TokenDataDTO {
     private String token;
     private String refreshToken;
 }

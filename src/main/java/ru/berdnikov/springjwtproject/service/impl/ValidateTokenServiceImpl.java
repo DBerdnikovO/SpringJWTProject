@@ -27,9 +27,6 @@ public class ValidateTokenServiceImpl implements ValidateTokenService {
         return validateToken(accessToken, getSigningKey());
     }
 
-    public boolean validateRefreshToken(String refreshToken) {
-        return validateToken(refreshToken, getSigningKey());
-    }
 
     private boolean validateToken(String token, Key secret) {
         try {

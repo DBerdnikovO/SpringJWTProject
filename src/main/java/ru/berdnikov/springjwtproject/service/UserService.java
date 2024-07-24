@@ -1,10 +1,7 @@
 package ru.berdnikov.springjwtproject.service;
 
-import ru.berdnikov.springjwtproject.dto.CreateUserRequestDTO;
+import ru.berdnikov.springjwtproject.dto.RegistrationUserRequestDTO;
 import ru.berdnikov.springjwtproject.model.UserModel;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * @author danilaberdnikov on UserService.
@@ -15,7 +12,7 @@ public interface UserService {
 
     UserModel findUserById(Long id);
 
-    UserModel saveUser(CreateUserRequestDTO createUserRequestDTO);
+    UserModel saveUser(RegistrationUserRequestDTO registrationUserRequestDTO);
 
     Boolean passwordMatch(String inPassword, String codePassword);
 }

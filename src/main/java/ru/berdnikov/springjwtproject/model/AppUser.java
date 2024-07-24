@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * @author danilaberdnikov on AppUser.
@@ -21,8 +22,17 @@ public class AppUser extends User {
         this.userId = Long.valueOf(userId);
     }
 
-    public AppUser(UserModel userModel, Collection<? extends GrantedAuthority> authorities) {
-        super(userModel.getUsername(), userModel.getPassword().toString(), authorities);
-        this.userId = userModel.getId();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        AppUser appUser = (AppUser) o;
+        return Objects.equals(userId, appUser.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), userId);
     }
 }

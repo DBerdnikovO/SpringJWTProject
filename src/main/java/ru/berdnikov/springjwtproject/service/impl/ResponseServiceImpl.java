@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.berdnikov.springjwtproject.dto.AuthTokenDTO;
-import ru.berdnikov.springjwtproject.dto.TokenData;
+import ru.berdnikov.springjwtproject.dto.TokenDataDTO;
 import ru.berdnikov.springjwtproject.service.ResponseService;
 import ru.berdnikov.springjwtproject.util.ErrorCode;
 
@@ -20,8 +20,13 @@ public class ResponseServiceImpl implements ResponseService {
     }
 
     @Override
-    public ResponseEntity<TokenData> success(TokenData tokenData) {
-        return ResponseEntity.ok(tokenData);
+    public ResponseEntity<String> expiredTokenRefreshError() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorCode.EXPIRED_REFRESHTOKEN.getError());
+    }
+
+    @Override
+    public ResponseEntity<TokenDataDTO> success(TokenDataDTO tokenDataDTO) {
+        return ResponseEntity.ok(tokenDataDTO);
     }
 
     @Override

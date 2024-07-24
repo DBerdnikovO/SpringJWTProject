@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -25,8 +25,8 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
  */
 @Slf4j
 @Configuration
+@EnableMethodSecurity
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class WebSecurityConfig {
     private final AuthenticationEntryPoint authenticationEntryPoint;
@@ -47,11 +47,12 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
-                .exceptionHandling((exception) -> exception.authenticationEntryPoint(authenticationEntryPoint).accessDeniedPage("/error/access-denied"))
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint).accessDeniedPage("/error/access-denied"))
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(WSCHelper.Resources.LOGIN.getPath()).permitAll()
                         .requestMatchers(WSCHelper.Resources.REGISTRATION.getPath()).permitAll()
+                        .requestMatchers(WSCHelper.Resources.REFRESH.getPath()).permitAll()
                         .requestMatchers(WSCHelper.Resources.PUBLIC.getPath()).permitAll()
                         .requestMatchers(WSCHelper.Resources.ADMIN.getPath()).hasRole(WSCHelper.Roles.ADMIN.name())
                         .requestMatchers(WSCHelper.Resources.USER.getPath()).hasRole(WSCHelper.Roles.USER.name())

@@ -13,15 +13,16 @@ import java.time.Duration;
  * @author danilaberdnikov on JWTConfig.
  * @project SpringJWTProject
  */
-@Getter
 @Configuration
 public class JWTConfig {
+    @Getter
     @Value("${jwt.refreshTokenExpiration}")
     private Duration refreshTokenExpiration;
 
     @Value("${jwt.secret}")
     private String jwtSecret;
 
+    @Getter
     @Value("${jwt.tokenExpiration}")
     private Duration tokenExpiration;
 

@@ -5,12 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @author danilaberdnikov on RefreshTokenRequest.
+ * @author danilaberdnikov on RefreshTokenRequestDTO.
  * @project SpringJWTProject
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RefreshTokenRequest {
+public class RefreshTokenRequestDTO {
     private String refreshToken;
 }

@@ -6,6 +6,4 @@ package ru.berdnikov.springjwtproject.service;
  */
 public interface ValidateTokenService {
     boolean validateAccessToken(String accessToken);
-
-    boolean validateRefreshToken(String refreshToken);
 }
