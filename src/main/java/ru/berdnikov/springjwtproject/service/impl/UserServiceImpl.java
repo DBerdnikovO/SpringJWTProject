@@ -31,9 +31,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserModel findUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(id.toString()));
+    }
+
+    @Override
     @Transactional
     public UserModel saveUser(CreateUserRequestDTO createUserRequestDTO) {
-        if (Boolean.TRUE.equals(personExist(createUserRequestDTO))) {
+        if (Boolean.TRUE.equals(userExist(createUserRequestDTO))) {
             throw new UserException(ErrorCode.USER_ALREADY_EXIST.getError());
         } else {
             UserModel user = convertToUserModel(createUserRequestDTO);
@@ -41,13 +46,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private Boolean personExist(CreateUserRequestDTO userRequest) {
-        return userRepository.existsByEmail(userRequest.getEmail());
-    }
-
     @Override
     public Boolean passwordMatch(String inPassword, String codePassword) {
         return passwordEncoder.matches(inPassword, codePassword);
+    }
+
+    private Boolean userExist(CreateUserRequestDTO userRequest) {
+        return userRepository.existsByEmail(userRequest.getEmail());
     }
 
     private UserModel convertToUserModel(CreateUserRequestDTO request) {

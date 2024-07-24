@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface UserService {
     UserModel findUserByEmail(String email);
 
+    UserModel findUserById(Long id);
+
     UserModel saveUser(CreateUserRequestDTO createUserRequestDTO);
 
     Boolean passwordMatch(String inPassword, String codePassword);

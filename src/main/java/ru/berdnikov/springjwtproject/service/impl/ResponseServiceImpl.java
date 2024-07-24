@@ -20,8 +20,8 @@ public class ResponseServiceImpl implements ResponseService {
     }
 
     @Override
-    public ResponseEntity<TokenData> success(String passwordToken, String refreshToken) {
-        return ResponseEntity.ok(new TokenData(passwordToken, refreshToken));
+    public ResponseEntity<TokenData> success(TokenData tokenData) {
+        return ResponseEntity.ok(tokenData);
     }
 
     @Override

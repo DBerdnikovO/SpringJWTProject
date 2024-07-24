@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.berdnikov.springjwtproject.dto.CreateUserRequestDTO;
 import ru.berdnikov.springjwtproject.dto.TokenData;
+import ru.berdnikov.springjwtproject.model.RefreshToken;
 import ru.berdnikov.springjwtproject.model.UserModel;
 import ru.berdnikov.springjwtproject.service.*;
 
@@ -25,9 +26,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<TokenData> registration(CreateUserRequestDTO userRequest) {
         UserModel userModel = userService.saveUser(userRequest);
-        String passwordTokenForUser = passwordTokenService.generatePasswordTokenForUser(userModel);
-        String refreshTokenForUser = refreshTokenService.generateRefreshTokenForUser(userModel);
-        return responseService.success(passwordTokenForUser, refreshTokenForUser);
+        return responseService.success(createTokenData(userModel));
     }
 
     @Override
@@ -36,9 +35,7 @@ public class AuthServiceImpl implements AuthService {
         return optionalUserModel.map(userModel -> {
             String password = userModel.getPassword().replaceAll("[\\[\\], ]", "");
             if (Boolean.TRUE.equals(userService.passwordMatch(userRequest.getPassword(), password))) {
-                String passwordTokenForUser = passwordTokenService.generatePasswordTokenForUser(userModel);
-                String refreshTokenForUser = refreshTokenService.generateRefreshTokenForUser(userModel);
-                return responseService.success(passwordTokenForUser, refreshTokenForUser);
+                return responseService.success(createTokenData(userModel));
             } else {
                 return responseService.passwordError();
             }
@@ -47,6 +44,15 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity<?> refresh(String userToken) {
+        RefreshToken refreshToken = refreshTokenService.getByValue(userToken);
+        UserModel userModel = userService.findUserById(refreshToken.getUserId());
+        createTokenData(userModel);
         return null;
+    }
+
+    private TokenData createTokenData(UserModel userModel) {
+        String passwordTokenForUser = passwordTokenService.generatePasswordTokenForUser(userModel);
+        String refreshTokenForUser = refreshTokenService.generateRefreshTokenForUser(userModel.getId());
+        return new TokenData(passwordTokenForUser, refreshTokenForUser);
     }
 }
