@@ -50,10 +50,11 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint).accessDeniedPage("/error/access-denied"))
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(WSCHelper.Resources.LOGIN.getPath()).permitAll()
-                        .requestMatchers(WSCHelper.Resources.REGISTRATION.getPath()).permitAll()
+                        .requestMatchers(WSCHelper.Resources.AUTH.getPath()).permitAll()
                         .requestMatchers(WSCHelper.Resources.REFRESH.getPath()).permitAll()
                         .requestMatchers(WSCHelper.Resources.PUBLIC.getPath()).permitAll()
+                        .requestMatchers(WSCHelper.Resources.SWAGGER.getPath()).permitAll()
+                        .requestMatchers(WSCHelper.Resources.SWAGGERV3.getPath()).permitAll()
                         .requestMatchers(WSCHelper.Resources.ADMIN.getPath()).hasRole(WSCHelper.Roles.ADMIN.name())
                         .requestMatchers(WSCHelper.Resources.USER.getPath()).hasRole(WSCHelper.Roles.USER.name())
                         .anyRequest().authenticated()

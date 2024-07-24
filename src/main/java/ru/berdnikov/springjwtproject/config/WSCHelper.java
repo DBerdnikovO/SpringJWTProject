@@ -13,12 +13,13 @@ public class WSCHelper {
     }
 
     protected enum Resources {
-        LOGIN("/login/**"),
-        REGISTRATION("/reg/**"),
+        AUTH("/auth/**"),
         REFRESH("/refresh/**"),
         ADMIN("/admin/**"),
         USER("/user/**"),
-        PUBLIC("/public/**");
+        PUBLIC("/public/**"),
+        SWAGGER("/swagger-ui/**"),
+        SWAGGERV3("/v3/**");
 
         private String path;
 

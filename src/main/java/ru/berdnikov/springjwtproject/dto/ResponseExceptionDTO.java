@@ -1,15 +1,15 @@
 package ru.berdnikov.springjwtproject.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author danilaberdnikov on ResponseExceptionDTO.
  * @project SpringJWTProject
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class ResponseExceptionDTO {
     private String httpStatus;
