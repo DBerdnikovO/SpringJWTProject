@@ -16,20 +16,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @project SpringJWTProject
  */
 @ExtendWith(MockitoExtension.class)
-public class ResponseServiceImplTest {
+class ResponseServiceImplTest {
 
     @InjectMocks
     private ResponseServiceImpl responseService;
 
     @Test
-    public void testExpiredTokenRefreshError() {
+    void testExpiredTokenRefreshError() {
         ResponseEntity<String> response = responseService.expiredTokenRefreshError();
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         assertEquals("Expired refresh token", response.getBody());
     }
 
     @Test
-    public void testSuccess() {
+    void testSuccess() {
         TokenDataDTO tokenDataDTO = new TokenDataDTO("accessToken", "refreshToken");
         ResponseEntity<TokenDataDTO> response = responseService.success(tokenDataDTO);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -37,14 +37,14 @@ public class ResponseServiceImplTest {
     }
 
     @Test
-    public void testPasswordError() {
+    void testPasswordError() {
         ResponseEntity<String> response = responseService.passwordError();
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         assertEquals("Incorrect password", response.getBody());
     }
 
     @Test
-    public void testEmailError() {
+    void testEmailError() {
         ResponseEntity<String> response = responseService.emailError("test@example.com");
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("User not found: test@example.com", response.getBody());
