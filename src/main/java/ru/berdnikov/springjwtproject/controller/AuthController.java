@@ -17,7 +17,7 @@ import ru.berdnikov.springjwtproject.service.AuthService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
-@Tag(name = "Auth", description = "Аутентификация и авторизация")
+@Tag(name = "Auth", description = "Аутентификация, авторизация, регистрация")
 public class AuthController {
     private final AuthService authService;
 
