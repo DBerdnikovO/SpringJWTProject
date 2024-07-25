@@ -8,7 +8,6 @@ import ru.berdnikov.springjwtproject.dto.TokenDataDTO;
  * @project SpringJWTProject
  */
 public interface ResponseService {
-
     ResponseEntity<String> expiredTokenRefreshError();
 
     ResponseEntity<TokenDataDTO> success(TokenDataDTO tokenDataDTO);

@@ -12,7 +12,6 @@ import ru.berdnikov.springjwtproject.model.AppUser;
 import ru.berdnikov.springjwtproject.model.UserModel;
 import ru.berdnikov.springjwtproject.service.JwtTokenService;
 
-import javax.crypto.SecretKey;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;

@@ -48,7 +48,7 @@ class AuthControllerTest {
     }
 
     @Test
-    public void testRegisterAndGetToken() throws Exception {
+    void testRegisterAndGetToken() throws Exception {
         when(authService.registration(any(RegistrationUserRequestDTO.class)))
                 .thenReturn(new ResponseEntity<>(HttpStatus.OK));
 
@@ -61,7 +61,7 @@ class AuthControllerTest {
     }
 
     @Test
-    public void testLoginAndGetToken() throws Exception {
+    void testLoginAndGetToken() throws Exception {
         when(authService.login(any(LoginUserRequestDTO.class)))
                 .thenReturn(new ResponseEntity<>(HttpStatus.OK));
 
@@ -74,7 +74,7 @@ class AuthControllerTest {
     }
 
     @Test
-    public void testRefresh() throws Exception {
+    void testRefresh() throws Exception {
         when(authService.refresh(any(String.class)))
                 .thenReturn(new ResponseEntity<>(HttpStatus.OK));
 

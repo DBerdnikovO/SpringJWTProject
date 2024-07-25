@@ -29,7 +29,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    @Operation(summary = "Залогинить пользователя и получить токены")
+    @Operation(summary = "Вход пользователя по логину и паролю")
     public ResponseEntity loginAndGetToken(
             @RequestBody @Parameter(description = "Логин по почте и паролю") LoginUserRequestDTO loginUserRequestDTO) {
         return authService.login(loginUserRequestDTO);

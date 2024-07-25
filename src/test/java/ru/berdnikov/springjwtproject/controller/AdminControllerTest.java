@@ -39,7 +39,7 @@ class AdminControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    public void testAdmin() throws Exception {
+    void testAdmin() throws Exception {
         mockMvc.perform(get("/admin"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("You are ADMIN"));
@@ -47,7 +47,7 @@ class AdminControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void testAdmin_Unauthorized() throws Exception {
+    void testAdmin_Unauthorized() throws Exception {
         mockMvc.perform(get("/admin"))
                 .andExpect(status().isForbidden());
     }

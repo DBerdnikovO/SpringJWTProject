@@ -92,7 +92,6 @@ class JwtTokenServiceImplTest {
         assertTrue(jwtTokenService.validateToken(token));
 
         // Test with expired token
-        // Using lenient() to avoid unnecessary stubbing exception
         lenient().when(jwtConfig.getTokenExpiration()).thenReturn(Duration.ofMillis(-1));
         String expiredToken = jwtTokenService.generatePasswordTokenForUser(userModel);
         assertFalse(jwtTokenService.validateToken(expiredToken));
