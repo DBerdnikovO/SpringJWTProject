@@ -39,7 +39,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public UserModel saveUser(RegistrationUserRequestDTO registrationUserRequestDTO) {
         if (Boolean.TRUE.equals(userExist(registrationUserRequestDTO))) {
             throw new UserException(ErrorCode.USER_ALREADY_EXIST.getError());
