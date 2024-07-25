@@ -21,7 +21,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8081/auth/reg",
+					"raw": "http://localhost:8081/auth/register",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -29,7 +29,7 @@
 					"port": "8081",
 					"path": [
 						"auth",
-						"reg"
+						"register"
 					]
 				}
 			},
@@ -75,7 +75,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0dXNlZHNhciIsImF1dGgiOiJVU0VSIiwiaWQiOjIwLCJpYXQiOjE3MjE3MTM3NjEsImV4cCI6MTcyMTcxMzgyMX0.9krc5WU_UQ5AvfYpvbeSKp_hHX2uHl5YZH8SUKP_UZKx9UXmF-7n_stQFkYKLzogLfWWEgSdiN7-53S8bq4a5A",
+							"value": "",
 							"type": "string"
 						}
 					]
@@ -84,7 +84,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"testusedsar\",\n    \"password\": \"securedaspassword\",\n    \"email\": \"testudaser@example.com\",\n    \"roles\": [\"USER\"]\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -116,7 +116,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0dXNlZHNhciIsImF1dGgiOiJVU0VSIiwiaWQiOjIwLCJpYXQiOjE3MjE3MTM3NjEsImV4cCI6MTcyMTcxMzgyMX0.9krc5WU_UQ5AvfYpvbeSKp_hHX2uHl5YZH8SUKP_UZKx9UXmF-7n_stQFkYKLzogLfWWEgSdiN7-53S8bq4a5A",
+							"value": "",
 							"type": "string"
 						}
 					]
@@ -125,7 +125,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"testusedsar\",\n    \"password\": \"securedaspassword\",\n    \"email\": \"testudaser@example.com\",\n    \"roles\": [\"USER\"]\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -133,14 +133,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8081/user",
+					"raw": "http://localhost:8081/admin",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8081",
 					"path": [
-						"user"
+						"admin"
 					]
 				}
 			},
